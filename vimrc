@@ -7,6 +7,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-rails.git'
 Bundle 'tpope/vim-fugitive.git'
+Bundle 'scrooloose/nerdtree.git'
 
 filetype plugin indent on
 
