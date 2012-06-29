@@ -1,4 +1,18 @@
+set nocompatible
+filetype off
 
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+Bundle 'tpope/vim-rails.git'
+
+filetype plugin indent on
+
+imap jk <Esc>
+syntax enable
+
+colorscheme torte
 " An example for a vimrc file.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
@@ -10,14 +24,6 @@
 "  for MS-DOS and Win32:  $VIM\_vimrc
 "	    for OpenVMS:  sys$login:.vimrc
 
-" When started as "evim", evim.vim will already have done these settings.
-if v:progname =~? "evim"
-  finish
-endif
-
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -59,11 +65,6 @@ endif
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
 
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
 
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
@@ -118,10 +119,3 @@ map <silent> <m-n> :cn <cr>
 " Change which file opens after executing :Rails command
 let g:rails_default_file='config/database.yml'
 
-syntax enable
-
-" To enable pathogen installs
-call pathogen#infect()
-
-imap jk <Esc>
-colorscheme torte
