@@ -6,6 +6,7 @@ call vundle#rc()
 
 Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-rails.git'
+Bundle 'tpope/vim-fugitive.git'
 
 filetype plugin indent on
 
@@ -118,4 +119,13 @@ map <silent> <m-n> :cn <cr>
 
 " Change which file opens after executing :Rails command
 let g:rails_default_file='config/database.yml'
+a
+a
+a
+a
+a
+a
+a
+aa
+a
 
