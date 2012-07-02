@@ -8,11 +8,16 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-rails.git'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'scrooloose/nerdtree.git'
+Bundle 'tpope/vim-rvm.git'
+Bundle 'tpope/vim-endwise.git'
+Bundle 'tpope/vim-surround.git'
+Bundle 'vim-scripts/AutoClose'
 
 filetype plugin indent on
 
 imap jk <Esc>
 syntax enable
+set tags+=gems.tags
 
 colorscheme torte
 " An example for a vimrc file.
