@@ -1,4 +1,7 @@
 set nocompatible
+set expandtab
+set shiftwidth=2
+set softtabstop=2
 filetype off
 
 set rtp+=~/.vim/bundle/vundle/
@@ -12,11 +15,15 @@ Bundle 'tpope/vim-rvm.git'
 Bundle 'tpope/vim-endwise.git'
 Bundle 'tpope/vim-surround.git'
 Bundle 'vim-scripts/AutoClose'
+Bundle 'vim-scripts/slimv.vim'
+Bundle 'kchmck/vim-coffee-script'
 
-filetype plugin indent on
+filetype on
+filetype indent on
+filetype plugin on
 
 imap jk <Esc>
-syntax enable
+syntax on
 set tags+=gems.tags
 
 colorscheme torte
@@ -123,5 +130,4 @@ let g:miniBufExplModSelTarget = 1
 map <silent> <m-p> :cp <cr>
 map <silent> <m-n> :cn <cr>
 
-" Change which file opens after executing :Rails command
-let g:rails_default_file='config/database.yml'
+let g:slimv_swank_cmd = '! xterm -e scheme --load /home/patrick/.vim/bundle/slimv.vim/slime/contrib/swank-mit-scheme.scm &'
