@@ -17,6 +17,8 @@ Bundle 'tpope/vim-surround.git'
 Bundle 'vim-scripts/AutoClose'
 Bundle 'vim-scripts/slimv.vim'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'tpope/vim-haml'
+Bundle 'altercation/vim-colors-solarized'
 
 filetype on
 filetype indent on
@@ -26,7 +28,8 @@ imap jk <Esc>
 syntax on
 set tags+=gems.tags
 
-colorscheme torte
+set background=dark
+colorscheme solarized
 " An example for a vimrc file.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
