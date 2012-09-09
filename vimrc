@@ -19,6 +19,7 @@ Bundle 'vim-scripts/slimv.vim'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'tpope/vim-haml'
 Bundle 'altercation/vim-colors-solarized'
+Bundle 'wincent/Command-T'
 
 filetype on
 filetype indent on
@@ -30,6 +31,8 @@ set tags+=gems.tags
 
 set background=dark
 colorscheme solarized
+
+map ,jc :!javac % <CR>
 " An example for a vimrc file.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
