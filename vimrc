@@ -33,6 +33,7 @@ set background=dark
 colorscheme solarized
 
 map ,jc :!javac % <CR>
+map ,t :CommandT <CR>
 " An example for a vimrc file.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
