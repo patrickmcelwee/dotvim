@@ -15,25 +15,99 @@ Bundle 'tpope/vim-rvm.git'
 Bundle 'tpope/vim-endwise.git'
 Bundle 'tpope/vim-surround.git'
 Bundle 'vim-scripts/AutoClose'
-Bundle 'vim-scripts/slimv.vim'
+"Bundle 'vim-scripts/slimv.vim'
 Bundle 'kchmck/vim-coffee-script'
-Bundle 'tpope/vim-haml'
+"Bundle 'tpope/vim-haml'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'wincent/Command-T'
+Bundle 'benmills/vimux'
+Bundle 'mattn/zencoding-vim'
 
 filetype on
 filetype indent on
 filetype plugin on
 
 imap jk <Esc>
+" Change mapleader from \ to ,
+let mapleader=","
 syntax on
 set tags+=gems.tags
 
 set background=dark
 colorscheme solarized
 
+" Vivo_Admin
+" When in a resource, open its map
+map <Leader>mp :e lib/duke_vivo_mapper/maps/%:t:r_map.rb<CR>
+" When in a map, open its resource
+map <Leader>rs :e lib/duke_vivo_mapper/resources/%:t:r:s/_map//.rb<CR>
+
+function! SwitchToMap(currentpath)
+  let filename=a:currentpath
+endfunction
+
 map ,jc :!javac % <CR>
 map ,t :CommandT <CR>
+
+" Switch to last window
+map ,, <C-^>
+
+"Move between windows
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+"Vimux
+" If text is selected, save it in v buffer and send to tmux
+vmap <Leader>vt "vy :call VimuxRunCommand(@v . "\n", 0)<CR>
+" Select current paragraph and send it to tmux
+nmap <Leader>vt vip<Leader>vt<CR>
+
+let g:VimuxOrientation = "h"
+let g:VimuxHeight = "25"
+let VimuxUseNearestPane = 1
+
+" Run the current file with rspec
+map <Leader>vs :call VimuxRunCommand("clear; rspec " . bufname("%"))<CR>
+" Run the current spec with rspec
+map <Leader>vo :call VimuxRunCommand("clear; rspec " . expand("%p") . ":" . line("."))<CR>
+" Run all specs
+map <Leader>va :call VimuxRunCommand("clear; rspec spec")<CR>
+" Run all model specs
+map <Leader>vm :call VimuxRunCommand("clear; rspec spec/models")<CR>
+" Run all controller specs
+map <Leader>vc :call VimuxRunCommand("clear; rspec spec/models")<CR>
+" Prompt for a command to run map
+map <Leader>vp :VimuxPromptCommand<CR>
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+" Inspect runner pane 
+map <Leader>vi :VimuxInspectRunner<CR>
+" Close vim tmux runner opened by VimuxRunCommand
+map <Leader>vq :VimuxCloseRunner<CR>
+" Interrupt any command running in the runner pane map
+map <Leader>vx :VimuxInterruptRunner<CR>
+
+"Run the current file with minitest
+map <Leader>ms :call VimuxRunCommand("clear; ruby -rminitest/pride " . bufname("%"))<CR>
+"Run all specs with minitest
+map <Leader>ma :call VimuxRunCommand("clear; ruby -rminitest/pride spec/specs.rb")<CR>
+
+"IRB
+"Load the current file in ruby
+map <Leader>lf :call VimuxRunCommand("load \'" . bufname("%") . "\'")<CR>
+
+"Surround shortcuts
+"Surround all text on line
+map <Leader>ss $v^S
+
+set backupdir=$HOME/.vim_backups
+set directory=$HOME/.vim_backups
+
+" Paste toggle
+set pastetoggle=<F2>
+
 " An example for a vimrc file.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
@@ -49,13 +123,6 @@ map ,t :CommandT <CR>
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file
-  set backupdir=$HOME/temp/vim
-  set dir=$HOME/temp/vim
-endif
 set history=50		" keep 50 lines of command line history
 set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
@@ -70,11 +137,6 @@ map Q gq
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
-
-" In many terminal emulators the mouse works just fine, thus enable it.
-if has('mouse')
-  set mouse=a
-endif
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -99,11 +161,6 @@ if has("autocmd")
   " (happens when dropping a file on gvim).
   " Also don't do it when the mark is in the first line, that is the default
   " position when opening a file.
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-
   augroup END
 
 else
