@@ -41,13 +41,12 @@ colorscheme solarized
 map <Leader>mp :e lib/duke_vivo_mapper/maps/%:t:r_map.rb<CR>
 " When in a map, open its resource
 map <Leader>rs :e lib/duke_vivo_mapper/resources/%:t:r:s/_map//.rb<CR>
+" Code to create a new data loader
+map <Leader>dl iRails.configuration.data_loader_factory.create_data_loader<Esc>
 
-function! SwitchToMap(currentpath)
-  let filename=a:currentpath
-endfunction
-
-map ,jc :!javac % <CR>
-map ,t :CommandT <CR>
+map <Leader>jc :!javac % <CR>
+map <Leader>t :CommandT <CR>
+map <Leader>nd :NERDTreeToggle<CR>
 
 " Switch to last window
 map ,, <C-^>
