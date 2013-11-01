@@ -11,7 +11,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-rails.git'
 Bundle 'tpope/vim-fugitive.git'
-Bundle 'scrooloose/nerdtree.git'
+"Bundle 'scrooloose/nerdtree.git' # corrupting characters
 Bundle 'tpope/vim-rvm.git'
 Bundle 'tpope/vim-endwise.git'
 Bundle 'tpope/vim-surround.git'
@@ -28,6 +28,8 @@ Bundle 'jwhitley/vim-matchit.git'
 Bundle 'tpope/vim-fireplace'
 Bundle 'guns/vim-clojure-static'
 Bundle 'patrickmcelwee/ftl-vim-syntax'
+Bundle 'groenewege/vim-less'
+Bundle 'mattpap/vim-owl-tools'
 
 filetype on
 filetype indent on
@@ -46,18 +48,19 @@ colorscheme solarized
 " Vivo_Admin
 " When in a resource, open its map
 map <Leader>mp :e app/maps/%:t:r_map.rb<CR>
-" When in a map, open its resource
-map <Leader>rs :e lib/duke_vivo_mapper/resources/%:t:r:s/_map//.rb<CR>
-map <Leader>gdm :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/maps<CR>
-map <Leader>gdr :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/resources<CR>
-map <Leader>gds :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/sources<CR>
-map <Leader>gdd :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/models<CR>
+  " When in a map, open its resource
+  map <Leader>rs :e lib/duke_vivo_mapper/resources/%:t:r:s/_map//.rb<CR>
+  map <Leader>gdm :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/maps<CR>
+  map <Leader>gdr :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/resources<CR>
+  map <Leader>gds :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/sources<CR>
+  map <Leader>gdd :CommandTFlush<CR>\|:CommandT lib/duke_vivo_mapper/models<CR>
 
-" Code to create a new data loader
-map <leader>d a<space>Rails.configuration.data_loader_factory.create_data_loader<Esc>
+  " Code to create a new data loader
+  map <leader>d a<space>Rails.configuration.data_loader_factory.create_data_loader<Esc>
+  map <leader>es aexpect(subject.)<Esc>==g_i
 
 " Command T
-map <Leader>t :CommandT <CR>
+map <Leader>f :CommandT <CR>
 map <Leader>gv :CommandTFlush<CR>\|:CommandT app/views<cr>
 
 map <Leader>jc :!javac % <CR>
@@ -95,12 +98,14 @@ let g:VimuxOrientation = "h"
 let g:VimuxHeight = "23"
 let VimuxUseNearestPane = 1
 
-" Run the current file with rspec
-map <Leader>vs :call VimuxRunCommand("rspec " . bufname("%"))<CR>
+" Run the current file with rspec, excluding js specs
+map <Leader>vs :call VimuxRunCommand("rspec --tag ~js " . bufname("%"))<CR>
+" Run the current spec with rspec, including js specs
+map <Leader>vjs :call VimuxRunCommand("rspec " . bufname("%"))<CR>
 " Run the current spec with rspec
 map <Leader>vo :call VimuxRunCommand("rspec " . expand("%p") . ":" . line("."))<CR>
 " Run all specs
-map <Leader>va :call VimuxRunCommand("rspec spec")<CR>
+map <Leader>va :call VimuxRunCommand("JRUBY_OPTS='$JRUBY_OPTS -J-XX:MaxPermSize=112m' rspec spec")<CR>
 " Run all model specs
 map <Leader>vm :call VimuxRunCommand("rspec spec/models")<CR>
 " Run all controller specs
@@ -117,14 +122,16 @@ map <Leader>vq :VimuxCloseRunner<CR>
 map <Leader>vx :VimuxInterruptRunner<CR>
 
 "Run the current file with test_unit
-map <Leader>ru :call VimuxRunCommand("clear; ruby " . bufname("%"))<CR>
+map <Leader>ru :call VimuxRunCommand("ruby -Itest " . bufname("%"))<CR>
 "Run the current spec with test_unit
 map <Leader>ro :call VimuxRunCommand("clear; ruby " . expand("%p") . ":" . line("."))<CR>
 
+"Run all tests
+map <Leader>rt :call VimuxRunCommand("clear; bundle exec rake test")<CR>
 "Run the current file with minitest
-map <Leader>ms :call VimuxRunCommand("clear; ruby -rminitest/pride " . bufname("%"))<CR>
+map <Leader>ms :call VimuxRunCommand("clear; ruby -Itest -rminitest/pride " . bufname("%"))<CR>
 "Run all specs with minitest
-map <Leader>ma :call VimuxRunCommand("clear; ruby -rminitest/pride spec/specs.rb")<CR>
+map <Leader>ma :call VimuxRunCommand("clear; ruby -Itest -rminitest/pride spec/specs.rb")<CR>
 
 "IRB
 "Load the current file in ruby
@@ -313,3 +320,7 @@ function! InlineTemp()
   let @a = original_a
   let @b = original_b
 endfunction
+
+"MATH
+nmap <Leader>me a ∈<Esc>
+nmap <Leader>mz a ℤ<Esc>
