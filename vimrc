@@ -5,31 +5,34 @@ set softtabstop=2
 set relativenumber
 filetype off
 
+let g:blockle_mapping = '<Leader>ed'
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-Bundle 'gmarik/vundle'
-Bundle 'tpope/vim-rails.git'
-Bundle 'tpope/vim-fugitive.git'
+Bundle  'gmarik/vundle'
+Bundle  'tpope/vim-rails.git'
+Bundle  'tpope/vim-fugitive.git'
 "Bundle 'scrooloose/nerdtree.git' # corrupting characters
-Bundle 'tpope/vim-rvm.git'
-Bundle 'tpope/vim-endwise.git'
-Bundle 'tpope/vim-surround.git'
-Bundle 'vim-scripts/AutoClose'
+Bundle  'tpope/vim-rvm.git'
+Bundle  'tpope/vim-endwise.git'
+Bundle  'tpope/vim-surround.git'
+Bundle  'Townk/vim-autoclose'
 "Bundle 'vim-scripts/slimv.vim'
-Bundle 'kchmck/vim-coffee-script'
+Bundle  'kchmck/vim-coffee-script'
 "Bundle 'tpope/vim-haml'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'wincent/Command-T'
-Bundle 'benmills/vimux'
-Bundle 'mattn/zencoding-vim'
-Bundle 'scrooloose/nerdcommenter.git'
-Bundle 'jwhitley/vim-matchit.git'
-Bundle 'tpope/vim-fireplace'
-Bundle 'guns/vim-clojure-static'
-Bundle 'patrickmcelwee/ftl-vim-syntax'
-Bundle 'groenewege/vim-less'
-Bundle 'mattpap/vim-owl-tools'
+Bundle  'altercation/vim-colors-solarized'
+Bundle  'wincent/Command-T'
+Bundle  'benmills/vimux'
+Bundle  'mattn/emmet-vim'
+Bundle  'scrooloose/nerdcommenter.git'
+Bundle  'jwhitley/vim-matchit.git'
+Bundle  'tpope/vim-fireplace'
+Bundle  'guns/vim-clojure-static'
+Bundle  'patrickmcelwee/ftl-vim-syntax'
+Bundle  'groenewege/vim-less'
+Bundle  'mattpap/vim-owl-tools'
+Bundle  'jgdavey/vim-blockle'
+Bundle  'aaronbieber/quicktask'
 
 filetype on
 filetype indent on
@@ -41,6 +44,7 @@ imap jk <Esc>
 let mapleader=" "
 syntax on
 set tags+=gems.tags
+nmap K -J
 
 set background=dark
 colorscheme solarized
@@ -66,8 +70,9 @@ map <Leader>gv :CommandTFlush<CR>\|:CommandT app/views<cr>
 map <Leader>jc :!javac % <CR>
 map <Leader>nd :NERDTreeToggle<CR>
 
-" Lazy save
-map <Leader>w :w<CR>
+" Lazy save 
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>
 
 " Switch to last window
 map <Leader><Leader> <C-^>
@@ -99,13 +104,13 @@ let g:VimuxHeight = "23"
 let VimuxUseNearestPane = 1
 
 " Run the current file with rspec, excluding js specs
-map <Leader>vs :call VimuxRunCommand("rspec --tag ~js " . bufname("%"))<CR>
+map <Leader>vs :call VimuxRunCommand("bundle exec rspec --tag ~js " . bufname("%"))<CR>
 " Run the current spec with rspec, including js specs
-map <Leader>vjs :call VimuxRunCommand("rspec " . bufname("%"))<CR>
+map <Leader>vjs :call VimuxRunCommand("bundle exec rspec " . bufname("%"))<CR>
 " Run the current spec with rspec
-map <Leader>vo :call VimuxRunCommand("rspec " . expand("%p") . ":" . line("."))<CR>
+map <Leader>vo :call VimuxRunCommand("JRUBY_OPTS='$JRUBY_OPTS -J-Xmx2024m -J-XX:MaxPermSize=112m' bundle exec rspec " . expand("%p") . ":" . line("."))<CR>
 " Run all specs
-map <Leader>va :call VimuxRunCommand("JRUBY_OPTS='$JRUBY_OPTS -J-XX:MaxPermSize=112m' rspec spec")<CR>
+map <Leader>va :call VimuxRunCommand("JRUBY_OPTS='$JRUBY_OPTS -J-XX:MaxPermSize=112m' bundle exec rspec spec")<CR>
 " Run all model specs
 map <Leader>vm :call VimuxRunCommand("rspec spec/models")<CR>
 " Run all controller specs
@@ -132,6 +137,10 @@ map <Leader>rt :call VimuxRunCommand("clear; bundle exec rake test")<CR>
 map <Leader>ms :call VimuxRunCommand("clear; ruby -Itest -rminitest/pride " . bufname("%"))<CR>
 "Run all specs with minitest
 map <Leader>ma :call VimuxRunCommand("clear; ruby -Itest -rminitest/pride spec/specs.rb")<CR>
+
+"Vivo
+map <Leader>vd :call VimuxRunCommand("ant deploy -Dskiptests=true")<CR>
+map <Leader>aa :call VimuxRunCommand("ant all -Dskiptests=true")<CR>
 
 "IRB
 "Load the current file in ruby
@@ -197,19 +206,30 @@ function! AlternateForCurrentFile()
   let new_file = current_file
   let in_spec = match(current_file, '^spec/') != -1
   let going_to_spec = !in_spec
-  let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1
-  if going_to_spec
-    if in_app
-      let new_file = substitute(new_file, '^app/', '', '')
-    end
-    let new_file = substitute(new_file, '\.e\?rb$', '_spec.rb', '')
-    let new_file = 'spec/' . new_file
-  else
-    let new_file = substitute(new_file, '_spec\.rb$', '.rb', '')
-    let new_file = substitute(new_file, '^spec/', '', '')
-    if in_app
-      let new_file = 'app/' . new_file
-    end
+  if (&filetype=='ruby')
+    let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<loaders\>')
+    if going_to_spec
+      if in_app
+        let new_file = substitute(new_file, '^app/', '', '')
+      end
+      let new_file = substitute(new_file, '\.e\?rb$', '_spec.rb', '')
+      let new_file = 'spec/' . new_file
+    else
+      let new_file = substitute(new_file, '_spec\.rb$', '.rb', '')
+      let new_file = substitute(new_file, '^spec/', '', '')
+      if in_app
+        let new_file = 'app/' . new_file
+      end
+    endif
+  endif
+  if (&filetype=='clojure')
+    if going_to_spec
+      let new_file = substitute(new_file, '^src/', 'spec/', '')
+      let new_file = substitute(new_file, '\.clj$', '_spec.clj', '')
+    else
+      let new_file = substitute(new_file, '_spec\.clj$', '.clj', '')
+      let new_file = substitute(new_file, '^spec/', 'src/', '')
+    endif
   endif
   return new_file
 endfunction
@@ -218,10 +238,18 @@ nnoremap <leader>. :call OpenTestAlternate()<cr>
 set backupdir=$HOME/.vim_backups
 set directory=$HOME/.vim_backups
 
+augroup smart_closure
+  autocmd!
+  autocmd FileType html imap {{ {{}}<Esc>hi
+  autocmd FileType css iunmap {{
+  autocmd FileType javascript iunmap {{
+augroup END
+
 augroup vimrcEx
   " Clear all autocmds in the group
   autocmd!
   autocmd FileType text setlocal textwidth=78
+  autocmd FileType text setlocal formatoptions=tan
   " Jump to last cursor position unless it's invalid or in an event handler
   autocmd BufReadPost *
     \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -229,10 +257,6 @@ augroup vimrcEx
     \ endif
   " Indent p tags
   autocmd FileType html,eruby if g:html_indent_tags !~ '\\|p\>' | let g:html_indent_tags .= '\|p\|li\|dt\|dd' | endif
-  " Leave the return key alone when in command line windows, since it's used
-  " to run commands there.
-  autocmd! CmdwinEnter * :unmap <cr>
-  autocmd! CmdwinLeave * :call MapCR()
 augroup END
 
 " Paste toggle
@@ -284,7 +308,15 @@ let g:slimv_swank_cmd = '! xterm -e scheme --load /home/patrick/.vim/bundle/slim
 let g:CommandTAlwaysShowDotFiles = 1
 let g:CommandTAcceptSelectionSplitMap='<C-d>'
 
+" Puts out value of a variable below its definition
+"pt = put
+nnoremap <Leader>pt "xyiwoputs ": #{}"<esc>F:"xPf{"xp 
+nnoremap <Leader>pit "xyiwoputs ": #{.inspect}"<esc>F:"xPf{"xp 
+vmap <Leader>pt "xyoputs ": #{}"<esc>F:"xPf{"xp
+
 "Refactoring (based on ecomba)
+" convert symbol to key of hash
+nnoremap <Leader>rh F:xepa<space>
 nnoremap <leader>it :call InlineTemp()<CR>
 
 " Synopsis:
@@ -324,3 +356,29 @@ endfunction
 "MATH
 nmap <Leader>me a ∈<Esc>
 nmap <Leader>mz a ℤ<Esc>
+
+"Autosave changes to this file
+autocmd! bufwritepost .vimrc source $MYVIMRC
+
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set number
+  else
+    set relativenumber
+  endif
+endfunc
+
+nnoremap <C-n> :call NumberToggle()<cr>
+
+autocmd FocusLost * :set number
+autocmd FocusGained * :set relativenumber
+autocmd InsertEnter * :set number
+autocmd InsertLeave * :set relativenumber
+
+"git
+map <Leader>gr :Gread<CR>:w<CR>:Gstatus<CR>
+
+"Clojure
+autocmd FileType clojure,lisp let b:AutoClosePairs = AutoClose#ParsePairs("() [] {} ` \"")
+
+"au BufNewFile,BufRead *.quicktask set filetype=quicktask
