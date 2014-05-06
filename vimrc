@@ -6,10 +6,10 @@ set relativenumber
 filetype off
 
 let g:blockle_mapping = '<Leader>ed'
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-Bundle  'gmarik/vundle'
+Bundle  'gmarik/Vundle.vim'
 Bundle  'tpope/vim-rails.git'
 Bundle  'tpope/vim-fugitive.git'
 "Bundle 'scrooloose/nerdtree.git' # corrupting characters
@@ -21,7 +21,7 @@ Bundle  'Townk/vim-autoclose'
 Bundle  'kchmck/vim-coffee-script'
 "Bundle 'tpope/vim-haml'
 Bundle  'altercation/vim-colors-solarized'
-Bundle  'wincent/Command-T'
+Bundle  'kien/ctrlp.vim'
 Bundle  'benmills/vimux'
 Bundle  'mattn/emmet-vim'
 Bundle  'scrooloose/nerdcommenter.git'
@@ -34,6 +34,7 @@ Bundle  'mattpap/vim-owl-tools'
 Bundle  'jgdavey/vim-blockle'
 Bundle  'aaronbieber/quicktask'
 
+call vundle#end()
 filetype on
 filetype indent on
 filetype plugin on
